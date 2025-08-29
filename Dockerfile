@@ -1,16 +1,14 @@
 FROM ubuntu:22.04
 
-# Install build tools and libcurl if you use it
-RUN apt-get update && \
-    apt-get install -y build-essential curl libcurl4-openssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update -qq && \
+    apt-get install -y build-essential cmake curl libcurl4-openssl-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy code and build
-WORKDIR /app
-COPY . .
-RUN make # or cmake .. && make, or whatever your build command is
+WORKDIR /app/build
 
-# Expose the port your server uses
+RUN cmake .. && make
+
+# Expose the port your server listens on
 EXPOSE 9000
 
 # Start the server
